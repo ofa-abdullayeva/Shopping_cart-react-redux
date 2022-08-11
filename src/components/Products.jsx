@@ -1,30 +1,48 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { addToCart } from "../actions";
 
-const Products = () => {
+const Products = ({ bookList, cart, addToCart }) => {
+  
   return (
     <div className="container mt-3">
       <h2>
         <span>Book List</span>
         <Link to="/cart">
           <button className="btn btn-outline-primary">
-            My Cart <span className="badge text-bg-danger">0</span>
+            My Cart <span className="badge text-bg-danger">{cart.length}</span>
           </button>
         </Link>
       </h2>
-      <div className="book">
-        <img src="https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX376_BO1,204,203,200_.jpg" alt="img-1" />
-        <div>
-        <h4>Clean Code</h4>
-        <p>Author: Robert C. Martin</p>
-        <p>Price: 42.49 $</p>
-      </div>
-      </div>
+      {bookList.map((book)=> {
+       const {id,name,price,author,image} = book
+        return (
+          <div className="book" key={id} >
+            <img src={image}alt={name} />
+            <div>
+              <h4>{name}</h4>
+              <p>Author: {author}</p>
+              <p>Price: {price}</p>
+              <button className="btn btn-success" onClick={() =>addToCart(book)}>Add to cart</button>
+            </div>
+          </div>
+        )
+      })}
 
-  
+
     </div>
   );
 };
 
-export default Products;
+const mapStateToProps = (state) => {
+  return {
+    bookList: state.bookList,
+    cart: state.cart,
+
+  }
+}
+
+
+export default connect(mapStateToProps ,{addToCart})(Products);
 // yarn add redux react-redux react-router-dom
